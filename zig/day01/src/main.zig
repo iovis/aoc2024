@@ -1,23 +1,15 @@
 const std = @import("std");
+const p1 = @import("p1.zig");
 
 pub fn main() !void {
-    const input = @embedFile("input.txt");
+    const input: []const u8 = @embedFile("input.txt");
+    // std.debug.print("{s}", .{input});
 
-    std.debug.print("{s}", .{input});
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
 
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
-
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
-
-    try bw.flush(); // don't forget to flush!
+    std.debug.print("p1 = {any}\n", .{p1.run(allocator, input)});
 }
 
 test "simple test" {
